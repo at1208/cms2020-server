@@ -14,7 +14,7 @@ exports.inviteonBoard = (req, res) => {
                 error: 'Email is taken'
             });
         }
-        const token = jwt.sign({ firstName, lastName, email, designation, department, contactNumber }, process.env.JWT_INVITATION, { expiresIn: '1m' });
+        const token = jwt.sign({ firstName, lastName, email, designation, department, contactNumber }, process.env.JWT_INVITATION, { expiresIn: '1d' });
         const emailData = {
             from: process.env.EMAIL_FROM,
             to: email,

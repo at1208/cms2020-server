@@ -16,6 +16,10 @@ const memberSchema = mongoose.Schema({
         type: String,
         trim: true
       },
+      photo:{
+        type:"String",
+        default:"https://i.stack.imgur.com/l60Hf.png"
+      },
       permission: {
         type: String,
         enum: ['owner','full access', 'partial access', 'limited access'],
