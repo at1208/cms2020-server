@@ -1,7 +1,7 @@
 const userEmail = []
 
 module.exports = (io) => {
- io.of('/').on("connection", (socket) => {
+ io.on("connection", (socket) => {
    socket.emit("online", {online: userEmail })
     socket.on("socketInfo", (user) => {
       console.log(user)
