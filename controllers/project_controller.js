@@ -8,7 +8,7 @@ module.exports.create_project = (req, res) => {
            projectLogo,
            teamMember } = req.body;
 
-    console.log(teamMember)
+
 
   const newProject = Project({
         projectName,

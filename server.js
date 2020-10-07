@@ -1,11 +1,14 @@
-const express = require('express');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
+const app = require('express')();
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const mongoose = require('mongoose');
 require('dotenv').config();
-const app = express();
+const server = require('http').createServer(app);
+const io = require('socket.io')(server);
+require('./controllers/groupchat_controller')(io)
+
 
 const projectRoute = require('./routes/project_route');
 const departmentRoute = require('./routes/department_route');
@@ -38,6 +41,6 @@ mongoose
     });
 
 const port = process.env.PORT || 8000;
-app.listen(port, () => {
+server.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
