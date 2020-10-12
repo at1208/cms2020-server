@@ -2,15 +2,19 @@ const mongoose = require('mongoose');
 const { ObjectId } = mongoose.Schema;
 
 const privateChatSchema = mongoose.Schema({
-        from:{
+        sender:{
            type: ObjectId,
            ref:'Member',
            required:true
          },
-         to:{
+         reciever:{
            type: ObjectId,
            ref:'Member',
            required:true
+         },
+         isRead:{
+           type: Boolean,
+           default: false
          },
          datetime:{
            type: Date,

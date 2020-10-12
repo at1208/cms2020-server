@@ -1,6 +1,10 @@
 const Member = require('../models/member_model');
+const Designation = require('../models/designation_model');
+const Department = require('../models/department_model');
+
 const jwt = require('jsonwebtoken');
 const { errorHandler } = require('../helpers/dbErrorHandler');
+
 
 // sendgrid
 const sgMail = require('@sendgrid/mail');
@@ -73,6 +77,7 @@ exports.signup = (req, res) => {
                   })
                 }
 
+
                 const newMember = new Member({ firstName, lastName,fullName, email, password, designation, department, contactNumber });
                 newMember.save((err, user) => {
                     if (err) {
@@ -80,9 +85,26 @@ exports.signup = (req, res) => {
                             error: errorHandler(err)
                         });
                     }
-                    return res.json({
-                        message: 'On board success! Please login'
-                    });
+                    console.log(designation, department)
+                    Designation.findByIdAndUpdate({ _id: designation[0]}, {member: user._id}, {new: true})
+                     .exec((err, resp) => {
+                       if(err){
+                         return res.status(400).json({
+                           error: err
+                         })
+                       }
+                       Department.findByIdAndUpdate({ _id: department[0]}, {member: user._id}, {new:true})
+                       .exec((err, response) => {
+                         if(err){
+                           return res.status(400).json({
+                             error: err
+                           })
+                         }
+                         return res.json({
+                             message: 'On board success! Please login'
+                         });
+                       })
+                     })
                 });
               })
         });

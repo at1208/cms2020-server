@@ -25,6 +25,7 @@ module.exports.create_department = (req, res) => {
 
 module.exports.get_all_departments = (req, res) => {
    Department.find()
+   .populate('member', 'fullName email')
     .exec((err, response) => {
       if(err){
         return res.status(400).json({

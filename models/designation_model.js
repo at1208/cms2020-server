@@ -9,7 +9,7 @@ const designationSchema = mongoose.Schema({
       },
       member:[{
         type: ObjectId,
-        ref: 'Employee'
+        ref: 'Member'
      }]
 },{ timestamps: true })
 

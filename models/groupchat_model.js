@@ -2,14 +2,16 @@ const mongoose = require('mongoose');
 const { ObjectId } = mongoose.Schema;
 
 const groupChatSchema = mongoose.Schema({
-        from:{
-           type: ObjectId,
-           ref:'Member',
+        sender:{
+          type: String,
+           // type: ObjectId,
+           // ref:'Member',
            required:true
          },
-         toGroup:{
-           type: ObjectId,
-           ref:'Member',
+         group:{
+           type: String,
+           // type: ObjectId,
+           // ref:'Member',
            required:true
          },
          datetime:{

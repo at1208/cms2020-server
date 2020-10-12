@@ -43,6 +43,11 @@ const memberSchema = mongoose.Schema({
         type:ObjectId,
         ref: "Department"
       },
+      isActive:{
+        type: Boolean,
+        required:true,
+        default: true
+      },
       hashed_password: {
         type: String,
         required: true

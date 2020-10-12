@@ -25,6 +25,7 @@ module.exports.create_designation = (req, res) => {
 
 module.exports.get_all_designations = (req, res) => {
    Designation.find()
+    .populate('member', 'fullName email')
     .exec((err, response) => {
       if(err){
         return res.status(400).json({

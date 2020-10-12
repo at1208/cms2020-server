@@ -6,7 +6,11 @@ const departmentSchema = mongoose.Schema({
         type: String,
         unique: true,
         trim: true
-      }
+      },
+      member:[{
+        type: ObjectId,
+        ref: 'Member'
+     }]
 },{ timestamps: true })
 
 module.exports = mongoose.model('Department', departmentSchema);
