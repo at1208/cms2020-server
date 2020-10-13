@@ -6,7 +6,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const server = require('http').createServer(app);
 require('dotenv').config();
-require("./controllers/groupchat_controller").socketio(server);
+require("./sockets/groupchat")(server);
 
 
 
@@ -16,6 +16,7 @@ const departmentRoute = require('./routes/department_route');
 const designationRoute = require('./routes/designation_route');
 const authRoute = require('./routes/auth_route');
 const memberRoute = require('./routes/member_route');
+const groupRoute = require('./routes/group_route');
 
 
 app.use(cors())
@@ -29,6 +30,7 @@ app.use('/api', departmentRoute);
 app.use('/api', designationRoute);
 app.use('/api', authRoute);
 app.use('/api', memberRoute);
+app.use('/api', groupRoute);
 
 mongoose
     .connect(process.env.DATABASE, {
