@@ -20,11 +20,6 @@ const memberSchema = mongoose.Schema({
         type:"String",
         default:"https://i.stack.imgur.com/l60Hf.png"
       },
-      permission: {
-        type: String,
-        enum: ['owner','full access', 'partial access', 'limited access'],
-        default: 'limited access'
-      },
       email:{
         type: String,
         unique: true,
@@ -42,6 +37,9 @@ const memberSchema = mongoose.Schema({
       department:{
         type:ObjectId,
         ref: "Department"
+      },
+      role:{
+        type:String
       },
       isActive:{
         type: Boolean,

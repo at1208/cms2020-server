@@ -24,7 +24,7 @@ module.exports.create_project = (req, res) => {
           })
         }
         res.status(200).json({
-          result: `new project ${response.projectName} is created`
+          result: `new product ${response.projectName} is created`
         })
     })
 }

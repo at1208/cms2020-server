@@ -1,10 +1,12 @@
 const Member = require('../models/member_model');
 const Designation = require('../models/designation_model');
 const Department = require('../models/department_model');
-
 const jwt = require('jsonwebtoken');
 const { errorHandler } = require('../helpers/dbErrorHandler');
-
+const jwk = require('../config/jwk');
+const jws = require('jws-jwk');
+const User = require('../models/user_model');
+const axios = require('axios');
 
 // sendgrid
 const sgMail = require('@sendgrid/mail');
@@ -149,3 +151,65 @@ exports.signin = (req, res) => {
         });
     });
 };
+
+
+
+module.exports.one_tap_google_login = async (req, res) => {
+    const { googleToken, domain } = req.body
+    const userInfo = async () => {
+    const info = await axios(`https://oauth2.googleapis.com/tokeninfo?id_token=${googleToken}`);
+    return info.data;
+  }
+    const user = await userInfo();
+
+    if(user){
+      const signatureVerify = await jws.verify(googleToken, jwk);
+      if(!signatureVerify){
+        return res.status(400).json({
+          error: "Authentication failed"
+        })
+      }
+
+      if (user.aud !== process.env.GOOGLE_CLIENT_ID || user.iss !== 'https://accounts.google.com') {
+         return res.status(400).json({
+           error: "Authentication failed"
+         })
+      }
+
+      const existing = await User.findOne({ email: user.email, domain: domain })
+      if(!existing){
+           const result = await GoogleUser({ email: user.email, name: user.given_name +" "+ user.family_name, picture: user.picture, domain: domain }).save()
+           const newUser = { _id: result._id, name: result.name, email: result.email }
+           const token = jwt.sign({ _id: result._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+           res.cookie('token', token, { expiresIn: '1d' });
+           return res.status(200).json({
+            token: token,
+            user: newUser
+          })
+      }
+      const existingUser = { _id: existing._id, name: existing.name, email: existing.email }
+      const token = jwt.sign({ _id: existing._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+       res.cookie('token', token, { expiresIn: '1d' });
+       return res.status(200).json({
+         token: token,
+         user: existingUser
+       })
+    }else{
+      res.status(400).json({
+        error: "Authentication failed"
+      })
+    }
+}
+
+module.exports.google_user_profile = (req, res) => {
+    User.findById(req.params.id)
+      .select('name email picture')
+      .exec((err, result) => {
+        if(err){
+          return res.status(400).json({
+            error: err
+          })
+        }
+        res.status(200).json(result)
+    })
+}

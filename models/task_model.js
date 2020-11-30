@@ -12,6 +12,11 @@ const taskSchema = mongoose.Schema({
       ref:"Member",
       required:true
     }],
+    product:{
+      type: ObjectId,
+      ref:"Product",
+      required:true
+    },
      taskTitle:{
       type:String,
       trim:true
@@ -22,7 +27,8 @@ const taskSchema = mongoose.Schema({
     },
     status:{
       type: String,
-      enum:['']
+      enum:['open', 'done'],
+      default:'open'
     }
 
 }, { timestamp: true })

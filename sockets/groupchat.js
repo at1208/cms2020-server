@@ -2,18 +2,14 @@ const GroupChat = require("../models/groupchat_model");
 
 module.exports = function(server){
 
-const { Users } =  require('../helpers/userClass')
-const io = require('socket.io')(server);
-const users = new Users();
+  const io = require('socket.io')(server);
+  const group = io.of('/groupchat');
 
-             console.log(users.GetUsersList('content'))
-
-     io.on('connection', (socket) => {
+     group.on('connection', (socket) => {
         const {room} = socket.handshake.query;
 
         socket.on('join', () => {
              socket.join(room)
-             // io.to(room).emit('usersList', users.GetUsersList(room));
         });
 
         socket.on('createMessage', async (message) => {
@@ -28,7 +24,7 @@ const users = new Users();
                  if(err){
                    return console.log(err)
                  }
-                  io.to(room).emit('newMessage', result);
+                  group.to(room).emit('newMessage', result);
                })
             })
 
@@ -36,15 +32,11 @@ const users = new Users();
         });
 
         socket.on("typing", (typing) => {
-            io.to(room).emit('activity', typing);
+            group.to(room).emit('activity', typing);
         })
 
         socket.on('disconnect', () => {
-            // var user = users.RemoveUser(socket.id);
-            //
-            // if(user){
-            //     io.to(user.room).emit('usersList', users.GetUsersList(user.room));
-            // }
+
         })
    });
 }
